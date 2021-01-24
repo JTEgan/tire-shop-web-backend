@@ -3,6 +3,12 @@ spring:
     url: jdbc:postgresql:jonegan
     username: appowner
     password: ownerpass
+    initialization-mode: always
   jpa:
     hibernate:
       ddl-auto: update
+  mvc:
+    log-request-details: true
+logging:
+  level:
+    org.springframework.web: DEBUG

@@ -1,11 +1,9 @@
 package jonegan.rmmservicesserverapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.Set;
 
 @Data
@@ -15,6 +13,6 @@ public class Customer {
     String id;
     String hashedPass;
 
-    @ManyToMany(targetEntity = Service.class)
+    @ManyToMany(targetEntity = Service.class, fetch = FetchType.LAZY)
     Set<Service> subscribedServices;
 }
