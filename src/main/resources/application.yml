@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:postgresql:jonegan
+    username: appowner
+    password: ownerpass
+  jpa:
+    hibernate:
+      ddl-auto: update
