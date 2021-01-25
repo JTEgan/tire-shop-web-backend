@@ -9,7 +9,10 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -53,43 +56,10 @@ public class BillingService {
         BigDecimal totalBill = totalServicesCost.add(devicesCost);
         log.info("totalBill: " + totalBill);
 
-        // todo, call repos, calculate the bill
         return new Bill(totalBill, devicesCost, costDetails);
     }
 
-
-/*
-    public Bill calculateBillJPA1(String customerId) {
-        Map<ServiceDeviceTypeCostId, BigDecimal> costMap = buildServiceCostMap();
-        Customer customer = customerRepository.getOne(customerId);
-        List<Device> customerDevices = deviceRepository.findDevicesByCustomer_Id(customerId);
-        BigDecimal devicesCost = PER_DEVICE_CHARGE.multiply(new BigDecimal(customerDevices.size()));
-        log.info("Devices cost: " + devicesCost);
-
-        Set<jonegan.rmmservicesserverapp.entities.Service> subscribedServices = customer.getSubscribedServices();
-        Map<String, BigDecimal> costDetails = new HashMap<>();
-        subscribedServices.forEach(service -> {
-            BigDecimal defaultCost = costMap.getOrDefault(new ServiceDeviceTypeCostId(service.getId(), null), BigDecimal.ZERO);
-            customerDevices.forEach(device -> {
-                ServiceDeviceTypeCostId serviceDeviceTypeCostId = new ServiceDeviceTypeCostId(service.getId(), device.getDeviceType());
-                BigDecimal costPerDevice = costMap.getOrDefault(serviceDeviceTypeCostId, defaultCost);
-                costDetails.computeIfPresent(service.getId(), (k, v) -> v.add(costPerDevice));
-            });
-
-            BigDecimal serviceCost = costDetails.get(service.getId());
-            log.info(service.getServiceName() + " cost: $" + serviceCost);
-        });
-        BigDecimal totalServicesCost = costDetails.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
-        log.info("totalServicesCost: " + totalServicesCost);
-        BigDecimal totalBill = totalServicesCost.add(devicesCost);
-        log.info("totalBill: " + totalBill);
-
-        costDetails.put("Devices", devicesCost);
-
-        // todo, call repos, calculate the bill
-        return new Bill(totalBill, Collections.emptyMap());
-    }
-*/
+    //TODO: alternate version using JDBC
 
     private Map<ServiceDeviceTypeCostId, BigDecimal> buildServiceCostMap() {
         return serviceCostRepository.findAll().stream()

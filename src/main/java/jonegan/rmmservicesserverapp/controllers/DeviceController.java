@@ -2,7 +2,6 @@ package jonegan.rmmservicesserverapp.controllers;
 
 import jonegan.rmmservicesserverapp.controllers.dtos.DeviceDto;
 import jonegan.rmmservicesserverapp.entities.Device;
-import jonegan.rmmservicesserverapp.entities.DeviceType;
 import jonegan.rmmservicesserverapp.repositories.CustomerRepository;
 import jonegan.rmmservicesserverapp.repositories.DeviceRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -77,28 +76,17 @@ public class DeviceController {
     }
 
     private boolean validForCreate(DeviceDto deviceDto) {
-        fixDeviceType(deviceDto);
         return deviceDto.getDeviceType() != null &&
                 StringUtils.hasLength(deviceDto.getSystemName()) &&
                 !StringUtils.hasLength(deviceDto.getId());
     }
 
     private boolean validForUpdate(String deviceId, DeviceDto deviceDto) {
-        deviceDto = fixDeviceType(deviceDto);
         return StringUtils.hasLength(deviceDto.getId()) &&
                 deviceDto.getId().equals(deviceId) &&
                 deviceDto.getDeviceType() != null &&
                 StringUtils.hasLength(deviceDto.getSystemName()) &&
                 deviceRepository.existsById(deviceId);
-    }
-
-    private DeviceDto fixDeviceType(DeviceDto deviceDto) {
-        log.info("deviceDto.getDeviceType is [" + deviceDto.getDeviceType() + "]");
-        // TODO remove when device type in json and db are evident
-        if (deviceDto.getDeviceType() == null) {
-            deviceDto = new DeviceDto(deviceDto.getId(), deviceDto.getSystemName(), DeviceType.WINDOWS_WORKSTATION);
-        }
-        return deviceDto;
     }
 
     private DeviceDto mapDeviceEntityToDto(Device device) {
