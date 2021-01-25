@@ -3,9 +3,10 @@ package jonegan.rmmservicesserverapp.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
 import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.io.Serializable;
 
 @Data
@@ -14,5 +15,6 @@ import java.io.Serializable;
 @Embeddable
 public class ServiceDeviceTypeCostId implements Serializable {
     String serviceId;
+    @Enumerated(EnumType.STRING)
     DeviceType deviceType;
 }

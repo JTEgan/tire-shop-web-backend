@@ -36,7 +36,7 @@ public class DeviceController {
                     .collect(Collectors.toList());
             return new ResponseEntity<>(customerDeviceDtos, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @GetMapping(value = "/customers/{customerId}/devices/{deviceId}")
@@ -47,7 +47,7 @@ public class DeviceController {
                     .map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
                     .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PostMapping("/customers/{customerId}/devices")
@@ -60,7 +60,7 @@ public class DeviceController {
             DeviceDto newDto = mapDeviceEntityToDto(device);
             return new ResponseEntity<>(newDto, HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PutMapping(value = "/customers/{customerId}/devices/{deviceId}")
@@ -72,7 +72,7 @@ public class DeviceController {
             DeviceDto newDto = mapDeviceEntityToDto(device);
             return new ResponseEntity<>(newDto, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     private boolean validForCreate(DeviceDto deviceDto) {
@@ -97,7 +97,7 @@ public class DeviceController {
         Device device = new Device();
         device.setDeviceType(deviceDto.getDeviceType());
         device.setSystemName(deviceDto.getSystemName());
-        device.setCustomer(customerRepository.getOne(customerId));
+        device.setCustomer(customerRepository.findById(customerId).orElseThrow(IllegalArgumentException::new));
         return device;
     }
 

@@ -21,7 +21,6 @@ public class JERMMUserDetailsService implements UserDetailsService {
     }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        return new User(username, SecurityUtil.hashPassword("rawPass"), Collections.singleton(new SimpleGrantedAuthority("ROLE_CUSTOMER")));
         log.info("Reached loadUserByUsername");
         return customerRepository.findById(username)
                 .map(customer -> {

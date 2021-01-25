@@ -22,22 +22,20 @@ public class BillingService {
     private final CustomerRepository customerRepository;
     private final ServiceCostRepository serviceCostRepository;
     private final DeviceRepository deviceRepository;
+    private final BillingDao billingDao;
 
-
-
-    public BillingService(CustomerRepository customerRepository, ServiceCostRepository serviceCostRepository, DeviceRepository deviceRepository) {
+    public BillingService(CustomerRepository customerRepository, ServiceCostRepository serviceCostRepository, DeviceRepository deviceRepository, BillingDao billingDao) {
         this.customerRepository = customerRepository;
         this.serviceCostRepository = serviceCostRepository;
         this.deviceRepository = deviceRepository;
+        this.billingDao = billingDao;
     }
 
     public Bill calculateBill(String customerId) {
         Map<ServiceDeviceTypeCostId, BigDecimal> costByDeviceTypeMap = buildServiceCostMap();
-        Customer customer = customerRepository.getOne(customerId);
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(IllegalArgumentException::new);
         List<Device> customerDevices = deviceRepository.findDevicesByCustomer_Id(customerId);
-
-        BigDecimal devicesCost = PER_DEVICE_CHARGE.multiply(new BigDecimal(customerDevices.size()));
-        log.info("Devices cost: " + devicesCost);
 
         Set<Service> subscribedServices = customer.getSubscribedServices();
         Map<Service, BigDecimal> costDetails = new HashMap<>();
@@ -53,13 +51,37 @@ public class BillingService {
         });
         BigDecimal totalServicesCost = costDetails.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
         log.info("totalServicesCost: " + totalServicesCost);
+
+        BigDecimal devicesCost = PER_DEVICE_CHARGE.multiply(new BigDecimal(customerDevices.size()));
+        log.info("Devices cost: " + devicesCost);
+
         BigDecimal totalBill = totalServicesCost.add(devicesCost);
         log.info("totalBill: " + totalBill);
 
         return new Bill(totalBill, devicesCost, costDetails);
     }
 
-    //TODO: alternate version using JDBC
+    public Bill calculateBillJdbc(String customerId) {
+        List<ServiceChargeDetail> serviceCharges = billingDao.getServiceCharges(customerId);
+        Map<Service, BigDecimal> serviceChargeSummary = new HashMap<>();
+
+        serviceCharges.forEach(scd -> {
+            log.info("Adding charge {} for service {} and deviceType {}", scd.monthlyCost, scd.serviceId, scd.deviceType);
+            Service service = new Service(scd.serviceId, scd.serviceName, null);
+            serviceChargeSummary.merge(service, scd.monthlyCost, BigDecimal::add);
+        });
+        BigDecimal totalServicesCost = serviceChargeSummary.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+        log.info("totalServicesCost: " + totalServicesCost);
+
+        long deviceCount = billingDao.getDeviceCount(customerId);
+        BigDecimal devicesCost = PER_DEVICE_CHARGE.multiply(new BigDecimal(deviceCount));
+        log.info("Devices cost: " + devicesCost);
+
+        BigDecimal totalBill = totalServicesCost.add(devicesCost);
+        log.info("totalBill: " + totalBill);
+
+        return new Bill(totalBill, devicesCost, serviceChargeSummary);
+    }
 
     private Map<ServiceDeviceTypeCostId, BigDecimal> buildServiceCostMap() {
         return serviceCostRepository.findAll().stream()

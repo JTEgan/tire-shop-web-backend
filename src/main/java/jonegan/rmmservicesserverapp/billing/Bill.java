@@ -10,5 +10,5 @@ import java.util.Map;
 public class Bill {
     BigDecimal totalCharge;
     BigDecimal devicesCharge;
-    Map<Service, BigDecimal> serviceChargeDetails;
+    Map<Service, BigDecimal> serviceChargeSummary;
 }

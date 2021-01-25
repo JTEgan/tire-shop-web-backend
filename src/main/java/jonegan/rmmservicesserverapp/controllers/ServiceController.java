@@ -35,18 +35,19 @@ public class ServiceController {
     @GetMapping("/customers/{customerId}/services")
     public ResponseEntity<Set<Service>> getSubscribedServices(Principal principal, @PathVariable String customerId) {
         if (validCustomerUser(principal, customerId)) {
-            Set<Service> subscribedServices = customerRepository.getOne(customerId).getSubscribedServices();
+            Set<Service> subscribedServices = customerRepository.findById(customerId).orElseThrow(IllegalArgumentException::new)
+                    .getSubscribedServices();
             return new ResponseEntity<>(subscribedServices, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PostMapping("/customers/{customerId}/services/{serviceId}")
     public ResponseEntity<Service> addService(Principal principal, @PathVariable String customerId, @PathVariable String serviceId) {
         if (validCustomerUser(principal, customerId) && validService(serviceId)) {
-            Customer customer = customerRepository.getOne(customerId);
+            Customer customer = customerRepository.findById(customerId).orElseThrow(IllegalArgumentException::new);
             Set<Service> subscribedServices = customer.getSubscribedServices();
-            Service serviceToAdd = serviceRepository.getOne(serviceId);
+            Service serviceToAdd = serviceRepository.findById(serviceId).orElseThrow(IllegalArgumentException::new);
 
             if (subscribedServices.add(serviceToAdd)) {
                 customerRepository.save(customer);
@@ -54,22 +55,22 @@ public class ServiceController {
             }
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @DeleteMapping(value = "/customers/{customerId}/services/{serviceId}")
     public ResponseEntity<Service> removeService(Principal principal, @PathVariable String customerId, @PathVariable String serviceId) {
         if (validCustomerUser(principal, customerId)) {
-            Customer customer = customerRepository.getOne(customerId);
+            Customer customer = customerRepository.findById(customerId).orElseThrow(IllegalArgumentException::new);
             Set<Service> subscribedServices = customer.getSubscribedServices();
-            Service serviceToRemove = serviceRepository.getOne(serviceId);
+            Service serviceToRemove = serviceRepository.findById(serviceId).orElseThrow(IllegalArgumentException::new);
             if (subscribedServices.remove(serviceToRemove)) {
                 customerRepository.save(customer);
                 return new ResponseEntity<>(serviceToRemove, HttpStatus.OK);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     private boolean validService(String serviceId) {

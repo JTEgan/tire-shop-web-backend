@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
@@ -26,7 +25,14 @@ public class CustomerController {
         if (validCustomerUser(principal, customerId)) {
             return new ResponseEntity<>(billingService.calculateBill(customerId), HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
+    @GetMapping("/customers/{customerId}/bill")
+    public ResponseEntity<Bill> getBillJdbc(Principal principal, @PathVariable String customerId) {
+        if (validCustomerUser(principal, customerId)) {
+            return new ResponseEntity<>(billingService.calculateBillJdbc(customerId), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
 }
