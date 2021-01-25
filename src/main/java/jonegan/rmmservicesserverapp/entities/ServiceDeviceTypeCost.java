@@ -8,8 +8,8 @@ import java.math.BigDecimal;
 
 @Data
 @Entity
-public class ServiceCost {
+public class ServiceDeviceTypeCost {
     @EmbeddedId
-    ServiceCostId serviceCostId;
+    ServiceDeviceTypeCostId serviceDeviceTypeCostId;
     BigDecimal monthlyCost;
 }
