@@ -4,7 +4,9 @@ import jonegan.rmmservicesserverapp.entities.Customer;
 import jonegan.rmmservicesserverapp.repositories.CustomerRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
 
@@ -14,14 +16,6 @@ public class SignUpController {
 
     public SignUpController(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
-    }
-
-    @GetMapping
-    public ResponseEntity<SignUpRequest> getNewCustomer() {
-        SignUpRequest signUpRequest = new SignUpRequest();
-        signUpRequest.setUsername("hi");
-        signUpRequest.setPassword("{noop}jon");
-        return new ResponseEntity<>(signUpRequest, HttpStatus.OK);
     }
 
     @PostMapping(value = "/signup")

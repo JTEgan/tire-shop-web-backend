@@ -75,6 +75,20 @@ public class DeviceController {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
+    @DeleteMapping(value = "/customers/{customerId}/devices/{deviceId}")
+    public ResponseEntity<DeviceDto> removeDevice(Principal principal, @PathVariable String customerId, @PathVariable String deviceId) {
+        if (validCustomerUser(principal, customerId)) {
+
+            return deviceRepository.findDeviceByCustomer_IdAndId(customerId, deviceId)
+                    .map(device -> {
+                        deviceRepository.deleteById(deviceId);
+                        return new ResponseEntity<>(mapDeviceEntityToDto(device), HttpStatus.OK);
+                    })
+                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
     private boolean validForCreate(DeviceDto deviceDto) {
         return deviceDto.getDeviceType() != null &&
                 StringUtils.hasLength(deviceDto.getSystemName()) &&

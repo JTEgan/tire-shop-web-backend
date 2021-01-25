@@ -60,6 +60,10 @@ GET http://localhost:8080/customers/4jon4/devices/4bc36c43-f6aa-4206-b303-049505
 Authorization: Basic 4jon4 nospaces
 
 
+### 1st company deletes a device     !!! change the device ID at the end of the URL !!!
+DELETE http://localhost:8080/customers/4jon4/devices/b667d903-fc06-4a5e-9916-ad82cce73778
+Authorization: Basic 4jon4 nospaces
+
 
 ### 1st company adds a device
 POST http://localhost:8080/customers/4jon4/devices
