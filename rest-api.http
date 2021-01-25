@@ -1,3 +1,7 @@
+### non-auth user gets list of services
+GET http://localhost:8080/services
+
+
 ### create 1st company
 POST http://localhost:8080/signup
 Content-Type: application/json
@@ -34,12 +38,6 @@ Authorization: Basic cust2 pass2
 ### 1st company tries to access their own data with wrong pass - expact fail 401
 GET http://localhost:8080/customers/4jon4/devices
 Authorization: Basic 4jon4 wrongpass
-
-
-
-### non-auth user gets list of services
-GET http://localhost:8080/services
-
 
 
 
