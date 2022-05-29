@@ -23,6 +23,8 @@ public class Employee {
     @Column(name = "full_name")
     private String fullName;
 
+    @Column(name = "role")
+    private String role;
 
     public Integer getId() {
         return id;
@@ -56,4 +58,11 @@ public class Employee {
         this.fullName = fullName;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 }

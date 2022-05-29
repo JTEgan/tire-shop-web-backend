@@ -29,7 +29,7 @@ public class EmployeeUserDetailsService implements UserDetailsService {
             log.info("found employee by username '{}'", username);
             List<GrantedAuthority> roles = new ArrayList<>();
             roles.add(new SimpleGrantedAuthority("ROLE_EMPLOYEE"));
-            if (null == employee.getFullName()) {
+            if ("ADMIN".equals(employee.getRole())) {
                 roles.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
             }
             return new UserImpl(employee.getUserName(), employee.getHashedPass(), employee.getFullName(), roles);

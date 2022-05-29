@@ -1,84 +1,90 @@
-# rmm-services-server-app
+# tire-shop-web-backend
 
-REST API for RMM service management and billing
+Tire Shop REST API for use with React web rewrite
 
 ## To run the application:
 
-1. Modify the url, username, and password in application.yml to point to a postgresql database with no tables. The
-   necessary tables will be created at application startup, and initial configuration data loaded.
-
-```
-spring:
-  datasource:
-    url: jdbc:postgresql:jonegan
-    username: appowner
-    password: ownerpass
-```
-
-2. Build with maven
+1. Build with maven
 
 ```
 mvn clean package
 ```
 
-3. java -jar target/rmm-services-server-app-0.0.1-SNAPSHOT.jar
+2. run jar, passing DB properties as VM parameters:
+```
+java \
+    -Dspring.datasource.url=jdbc:xyz \
+    -Dspring.datasource.username=xyz \
+    -Dspring.datasource.password=xyz \
+    -jar target/tire-shop-web-backend-0.0.1-SNAPSHOT.jar
+```
 
-## Tables
+3. access the services at http://localhost:8080/
 
-The application creates and uses 5 tables:
 
-1. SERVICE - defines the services offered by the RMM company, and holds the monthly cost for the service, if the cost
-   does not vary by device type
-2. SERVICE_DEVICE_TYPE_COST - holds the monthly cost for services when the cost varies by the type of the device
-3. CUSTOMER - this also acts as the user table, holds the hashed password
-4. DEVICE - stores the devices configured by each company
-5. CUSTOMER_SUBSCRIBED_SERVICES - stores the services subscribed to by each company
+## Authorization
+### Users
+Users are stored in the `employee2` table. 
+Possible roles are `ADMIN` and `EMPLOYEE`. 
+New `EMPLOYEE` users can be created with the `/signup` service, 
+which is only accessible to `ADMIN` users. 
+New `ADMIN` users must be created in the database.
 
-![Tables used by the application](tables.png)
+### Authentication
+The services require username/password via Basic Authentication (browser pop-up or `Authorization` header) 
 
-# Includes the following APIs:
+## Available services
 
-See file rest-api.http for samples of each type of request.
+### Rest Repository services
+The `/` URL will show the available Spring Data Rest Repo services, which are available to any authenticated user:
 
-## Unsecured services
+```
+{
+"_links" : {
+"lineitems" : {
+"href" : "http://localhost:8080/lineitems{?projection}",
+"templated" : true
+},
+"products" : {
+"href" : "http://localhost:8080/products{?page,size,sort}",
+"templated" : true
+},
+"customers" : {
+"href" : "http://localhost:8080/customers"
+},
+"orders" : {
+"href" : "http://localhost:8080/orders{?page,size,sort}",
+"templated" : true
+},
+"employees" : {
+"href" : "http://localhost:8080/employees"
+},
+"profile" : {
+"href" : "http://localhost:8080/profile"
+}
+}
+}
+```
 
-* `GET /services`
-  Returns info about all services available from the RMM service provider.
-* `POST /signup`
-  Creates a new customerRMM in the system, which enables access to the secured services with that user and pass to perform
-  customerRMM actions. The customerRMM will initially have 0 devices, and subscribe to 0 services.
+### Other services
+In addition to the Rest Repo services, there are two more services:
 
-## Secured services
+#### POST /signup
+To create a user with EMPLOYEE role, POST to  `/signup` and pass credentials for an existing user with ADMIN role
+```
+POST http://localhost:8080/signup
+Authorization: Basic USER PASS
+Content-Type: application/json
 
-These require Basic Auth with a username/pass from the /signup service. The customerRMM id in the URL must match the
-authenticated user. The data is limited to only this customerRMM's data.
+{
+  "username": "dude2",
+  "password": "pass",
+  "fullName": "Another Dude"
+}
+```
 
-### Devices
+#### GET /order-details/{orderId}
+To get Order details including Customer and an array of Products/Counts,
+GET `/order-details/{orderId}`
 
-* `GET /customers/{customerId}/devices`
-  Get all devices for a customerRMM
-* `GET /customers/{customerId}/devices/{deviceId}`
-  Get details of a single device
-* `POST /customers/{customerId}/devices`
-  Create a new device associated with the customerRMM
-* `PUT /customers/{customerId}/devices/{deviceId}`
-  Modify a device
-* `DELETE /customers/{customerId}/devices/{deviceId}`
-
-### RMM Services
-
-* `GET /customers/{customerId}/services`
-  Get all services a customerRMM is enrolled for
-* `POST /customers/{customerId}/services/{serviceId}`
-  Add the specified service to the customerRMM
-* `DELETE /customers/{customerId}/services/{serviceId}`
-  Remove the specified service from the customerRMM
-
-### Billing
-
-Two forms of retrieving the bill for the customerRMM, one implemented in JPA and the other in JDBC
-
-* `GET /customers/{customerId}`
-  JPA version
-* `GET /customers/{customerId}/bill`
-  JDBC version
+Requiwith an existing user with EMPLOYEE role

@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>jonegan</groupId>
-	<artifactId>rmm-services-server-app</artifactId>
+	<artifactId>tire-shop-web-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>rmm-services-server-app</name>
-	<description>REST API for RMM service management and billing</description>
+	<name>tire-shop-web-backend</name>
+	<description>Tire Shop REST API for use with React web rewrite</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>

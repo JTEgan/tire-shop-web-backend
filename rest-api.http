@@ -69,7 +69,7 @@ Content-Type: application/json
 {
   "username": "dude2",
   "password": "pass",
-  "fullName": "Another"
+  "fullName": "Another Dude"
 }
 
 ###
@@ -79,6 +79,9 @@ Content-Type: application/json
 
 {
   "username": "dude2",
-  "password": "pass",
-  "fullName": "Another"
+  "password": "pass"
 }
+
+###
+GET http://localhost:8080/order-details/1
+Authorization: Basic Guyb pass
