@@ -1,210 +1,84 @@
-### non-auth user gets list of services
-GET http://localhost:8080/services
-
-
-### create 1st company
+###
 POST http://localhost:8080/signup
+Authorization: Basic super_secret_admin nospaces
 Content-Type: application/json
 
 {
-  "username": "4jon4",
-  "password": "nospaces"
+  "username": "SmithJ",
+  "password": "password123",
+  "fullName": "Joe Smith"
 }
 
+###
 
-
-### create 2nd company
 POST http://localhost:8080/signup
+Authorization: Basic super_secret_admin nospaces
 Content-Type: application/json
 
 {
-  "username": "cust2",
-  "password": "pass2"
+  "username": "Jenkinsc",
+  "password": "pa$$word",
+  "fullName": "Carol Jenkins"
+}
+
+###
+
+POST http://localhost:8080/signup
+Authorization: Basic super_secret_admin nospaces
+Content-Type: application/json
+
+{
+  "username": "Michaelsd",
+  "password": "PaSsWord!",
+  "fullName": "Dan Michaels"
+}
+
+###
+
+POST http://localhost:8080/signup
+Authorization: Basic super_secret_admin nospaces
+Content-Type: application/json
+
+{
+  "username": "Taylorj",
+  "password": "qwerty123",
+  "fullName": "Jason Taylor"
 }
 
 
+###
 
-### 1st company tries to access 2nd company's data - expact fail 403 FORBIDDEN
-GET http://localhost:8080/customers/cust2/devices
-Authorization: Basic 4jon4 nospaces
-
-
-### 2nd company tries to access 2nd company's data - expact success (empty array return)
-GET http://localhost:8080/customers/cust2/devices
-Authorization: Basic cust2 pass2
-
-
-
-### 1st company tries to access their own data with wrong pass - expact fail 401
-GET http://localhost:8080/customers/4jon4/devices
-Authorization: Basic 4jon4 wrongpass
-
-
-
-### 1st company adds a device
-POST http://localhost:8080/customers/4jon4/devices
-Authorization: Basic 4jon4 nospaces
+POST http://localhost:8080/signup
+Authorization: Basic super_secret_admin nospaces
 Content-Type: application/json
 
 {
-  "systemName": "JonSystem1",
-  "deviceType": "WINDOWS_WORKSTATION"
-}
-
-
-
-### 1st company views the device just added    !!! change the device ID at end of URL !!!
-GET http://localhost:8080/customers/4jon4/devices/4bc36c43-f6aa-4206-b303-04950515aa01
-Authorization: Basic 4jon4 nospaces
-
-
-### 1st company deletes a device     !!! change the device ID at the end of the URL !!!
-DELETE http://localhost:8080/customers/4jon4/devices/b667d903-fc06-4a5e-9916-ad82cce73778
-Authorization: Basic 4jon4 nospaces
-
-
-### 1st company adds a device
-POST http://localhost:8080/customers/4jon4/devices
-Authorization: Basic 4jon4 nospaces
-Content-Type: application/json
-
-{
-  "systemName": "JonSystem2",
-  "deviceType": "WINDOWS_SERVER"
-}
-
-
-### 1st company adds a device
-POST http://localhost:8080/customers/4jon4/devices
-Authorization: Basic 4jon4 nospaces
-Content-Type: application/json
-
-{
-  "systemName": "Jon3",
-  "deviceType": "MAC"
-}
-
-
-### 1st company adds a device
-POST http://localhost:8080/customers/4jon4/devices
-Authorization: Basic 4jon4 nospaces
-Content-Type: application/json
-
-{
-  "systemName": "Jon4",
-  "deviceType": "MAC"
-}
-
-
-
-### 1st company adds a device
-POST http://localhost:8080/customers/4jon4/devices
-Authorization: Basic 4jon4 nospaces
-Content-Type: application/json
-
-{
-  "systemName": "Jon5",
-  "deviceType": "MAC"
-}
-
-
-### 1st company views all of their devices
-GET http://localhost:8080/customers/4jon4/devices/
-Authorization: Basic 4jon4 nospaces
-
-
-
-
-### 2nd company adds a device
-POST http://localhost:8080/customers/cust2/devices
-Authorization: Basic cust2 pass2
-Content-Type: application/json
-
-{
-  "systemName": "Cust 2 device 1",
-  "deviceType": "MAC"
+  "username": "Guyb",
+  "password": "pass",
+  "fullName": "Buddy Guy"
 }
 
 
 
 
-### 2nd company adds a device
-POST http://localhost:8080/customers/cust2/devices
-Authorization: Basic cust2 pass2
+###
+POST http://localhost:8080/signup
+Authorization: Basic Guyb pass
 Content-Type: application/json
 
 {
-  "systemName": "Cust 2 device 2",
-  "deviceType": "WINDOWS_WORKSTATION"
+  "username": "dude2",
+  "password": "pass",
+  "fullName": "Another"
 }
 
+###
+POST http://localhost:8080/signup
+Authorization: Basic super_secret_admin nospaces
+Content-Type: application/json
 
-
-### 2nd company views all of their devices
-GET http://localhost:8080/customers/cust2/devices/
-Authorization: Basic cust2 pass2
-
-
-
-### 1st company gets their bill - no services, just devices
-GET http://localhost:8080/customers/4jon4
-Authorization: Basic 4jon4 nospaces
-
-
-
-### 1st company gets their bill (alternate version with JDBC) - no services, just devices
-GET http://localhost:8080/customers/4jon4/bill
-Authorization: Basic 4jon4 nospaces
-
-
-### 1st company adds a service
-POST http://localhost:8080/customers/4jon4/services/AV
-Authorization: Basic 4jon4 nospaces
-
-
-### 1st company adds a service
-POST http://localhost:8080/customers/4jon4/services/TV
-Authorization: Basic 4jon4 nospaces
-
-
-### 1st company adds a service
-POST http://localhost:8080/customers/4jon4/services/CB
-Authorization: Basic 4jon4 nospaces
-
-
-### 1st company tries to add a service they already have -- expect fail CONFLICT
-POST http://localhost:8080/customers/4jon4/services/CB
-Authorization: Basic 4jon4 nospaces
-
-
-### 1st company adds a service
-POST http://localhost:8080/customers/4jon4/services/PSA
-Authorization: Basic 4jon4 nospaces
-
-
-### 1st company lists their services
-GET http://localhost:8080/customers/4jon4/services/
-Authorization: Basic 4jon4 nospaces
-
-
-### 1st company deletes a service
-DELETE http://localhost:8080/customers/4jon4/services/PSA
-Authorization: Basic 4jon4 nospaces
-
-
-### 1st company lists their services - should be 3 now
-GET http://localhost:8080/customers/4jon4/services/
-Authorization: Basic 4jon4 nospaces
-
-
-### 1st company gets their bill - 3 services, 5 devices, should total $71
-GET http://localhost:8080/customers/4jon4
-Authorization: Basic 4jon4 nospaces
-
-
-### 1st company gets their bill (alternate method by JDBC) - 3 services, 5 devices, should total $71
-GET http://localhost:8080/customers/4jon4/bill
-Authorization: Basic 4jon4 nospaces
-
-
-
+{
+  "username": "dude2",
+  "password": "pass",
+  "fullName": "Another"
+}

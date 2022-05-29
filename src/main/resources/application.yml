@@ -1,14 +1,16 @@
 spring:
   datasource:
-    url: jdbc:postgresql:jonegan
-    username: appowner
-    password: ownerpass
-    initialization-mode: always
+#    url: pass on commandline with -Dspring.datasource.url=jdbc:xyz
+#    username: pass on commandline with -Dspring.datasource.username=xyz
+#    password: pass on commandline with -Dspring.datasource.password=xyz
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
   mvc:
     log-request-details: true
+  sql:
+    init:
+      mode: never
 logging:
   level:
     org.springframework.web: DEBUG

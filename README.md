@@ -45,22 +45,22 @@ See file rest-api.http for samples of each type of request.
 * `GET /services`
   Returns info about all services available from the RMM service provider.
 * `POST /signup`
-  Creates a new customer in the system, which enables access to the secured services with that user and pass to perform
-  customer actions. The customer will initially have 0 devices, and subscribe to 0 services.
+  Creates a new customerRMM in the system, which enables access to the secured services with that user and pass to perform
+  customerRMM actions. The customerRMM will initially have 0 devices, and subscribe to 0 services.
 
 ## Secured services
 
-These require Basic Auth with a username/pass from the /signup service. The customer id in the URL must match the
-authenticated user. The data is limited to only this customer's data.
+These require Basic Auth with a username/pass from the /signup service. The customerRMM id in the URL must match the
+authenticated user. The data is limited to only this customerRMM's data.
 
 ### Devices
 
 * `GET /customers/{customerId}/devices`
-  Get all devices for a customer
+  Get all devices for a customerRMM
 * `GET /customers/{customerId}/devices/{deviceId}`
   Get details of a single device
 * `POST /customers/{customerId}/devices`
-  Create a new device associated with the customer
+  Create a new device associated with the customerRMM
 * `PUT /customers/{customerId}/devices/{deviceId}`
   Modify a device
 * `DELETE /customers/{customerId}/devices/{deviceId}`
@@ -68,15 +68,15 @@ authenticated user. The data is limited to only this customer's data.
 ### RMM Services
 
 * `GET /customers/{customerId}/services`
-  Get all services a customer is enrolled for
+  Get all services a customerRMM is enrolled for
 * `POST /customers/{customerId}/services/{serviceId}`
-  Add the specified service to the customer
+  Add the specified service to the customerRMM
 * `DELETE /customers/{customerId}/services/{serviceId}`
-  Remove the specified service from the customer
+  Remove the specified service from the customerRMM
 
 ### Billing
 
-Two forms of retrieving the bill for the customer, one implemented in JPA and the other in JDBC
+Two forms of retrieving the bill for the customerRMM, one implemented in JPA and the other in JDBC
 
 * `GET /customers/{customerId}`
   JPA version
